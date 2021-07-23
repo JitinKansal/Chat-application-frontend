@@ -1,0 +1,28 @@
+.Contact{
+    display: flex;
+    cursor: pointer;
+    padding: 1rem;
+    border-bottom: 0.1rem solid rgba(255,255,255,0.5);
+}
+
+.Contact:hover{
+    background: linear-gradient(
+        to right top ,
+        rgba(255,255,255,0.7),
+        rgba(255,255,255,0.3));;
+}
+
+.Conatct-info{
+    margin-left: 1rem;
+    opacity: 0.7;
+}
+
+.Conatct-info h3{
+    font-size: 1rem;
+    padding-bottom: 0.3rem;
+    font-weight: 500;
+}
+.Conatct-info p{
+    font-size: 0.8rem;
+    color: gray;
+}

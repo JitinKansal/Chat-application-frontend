@@ -1,0 +1,31 @@
+.Message{
+    position: relative;
+    padding: 0.5rem;
+    width: fit-content;
+    background: linear-gradient(
+        to right top ,
+        rgba(255,255,255,0.3),
+        rgba(255,255,255,0.5));
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    margin-bottom: 2rem;
+}
+
+.Message-name{
+    position: absolute;
+    top: -0.8rem;
+    font-weight: 700;
+    font-size: xx-small;
+}
+.Message-date{
+    margin-left: 1rem;
+    font-size: xx-small;
+}
+
+.Message-send{
+    margin-left: auto;
+    background: linear-gradient(
+        to right bottom ,
+        rgba(255,255,255,0.8),
+        rgba(255,255,255,0.7));
+}

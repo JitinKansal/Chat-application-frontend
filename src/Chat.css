@@ -1,0 +1,82 @@
+.chating-area{
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+}
+
+.connection-header{
+    background: linear-gradient(
+    to right bottom ,
+    rgba(255,255,255,0.4),
+    rgba(255,255,255,0.2));
+    border-radius: 0 2rem 0 0;
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+.connection-info {
+    opacity: 0.7;
+    padding-left: 1rem;
+    flex: 1;
+}
+
+.connection-info h3{
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+}
+.connection-info p{
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: gray;
+}
+.connection-right{
+    color: gray;
+    opacity: 1;
+}
+.connection-right i{
+    padding: 0 1rem;
+}
+
+
+.Message-body{
+    flex: 1;
+    background-repeat: repeat;
+    background-position: center;
+    padding: 1.5rem;
+    overflow: Auto;
+}
+
+.chat-footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2rem;
+}
+
+.chat-footer form{
+    flex: 1;
+    display: flex;
+}
+
+.chat-footer form input{
+    flex: 1;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    background: linear-gradient(
+    to right top,
+    rgba(255,255,255,0.7),
+    rgba(255,255,255,0.4));
+    border: none;
+    outline: none;
+}
+
+.chat-footer form button{
+    display: none;
+}
+.chat-footer i{
+    opacity: 0.7;
+    padding: 0.5rem;
+}
+
+
