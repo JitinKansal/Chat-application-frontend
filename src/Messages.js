@@ -2,10 +2,6 @@ import './Messages.css';
 
 
 function Messages(props){
-
-    
-
-
     if(props.send === "true"){
     return(
             <p className="Message Message-send">

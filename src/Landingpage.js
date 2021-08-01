@@ -1,29 +1,35 @@
 import React,{Component} from 'react';
 import './Landingpage.css';
-import './signin';
-import './signup';
+import Signin from './signin';
+import Signup from './signup';
 
 class Landingpage extends Component{
 
   constructor() {
-    super();
-    this.state={
-
+    super()
+    this.state = {
+      signin : false,
+      signup : false,
+      showButton : true,
     }
+    this.openSigninPage= this.openSigninPage.bind(this)
+    this.openSignupPage= this.openSignupPage.bind(this)
   }
 
-  openSigninPage = () => {
-    console.log("signin");
-    return(
-      <signin/>
-    );
+  openSigninPage = () =>{
+    console.log(this.state.signin)
+    this.setState({
+      signin:true,
+      showButton:false,
+    })
   }
 
   openSignupPage = () => {
-    console.log("signup");
-    return(
-      <signup/>
-    );
+    console.log(this.state.signup)
+    this.setState({
+      signup:true,
+      showButton:false,
+    })
   }
 
   render() {
@@ -44,10 +50,14 @@ class Landingpage extends Component{
         <div className="para">
             <p>Snake Bite</p>
         </div>
+        {this.state.showButton?
         <div className="buttons">
-          <button onClick={this.openSigninPage}>Signin</button>
-          <button onClick={this.openSignupPage}>Signup</button>
+        <button onClick={this.openSigninPage}>Signin</button>
+        <button onClick={this.openSignupPage}>Signup</button>
         </div>
+         : null}
+        {this.state.signin? <Signin/> :null}
+        {this.state.signup? <Signup/> :null}
       </div>
   );
   } 
