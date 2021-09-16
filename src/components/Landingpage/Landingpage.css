@@ -90,8 +90,8 @@ animation-delay: 1.5s;
 }
 
 .square img{
-    width: 50%;
-    height: 50%;
+    width: 70%;
+    height: 70%;
     animation: rotateright 4s linear infinite;
 }
 @keyframes rotateright {
@@ -114,8 +114,10 @@ animation-delay: 1.5s;
 }
 
 
-.buttons button{
-    margin-top: 2rem;
+.buttons{
+    text-decoration: none;
+    color: black;
+    /* margin-top: 2rem; */
     margin-right: 1rem;
     padding: 1rem;
     font-size: 1.5rem;
