@@ -1,15 +1,30 @@
-.Contact{
+.Watched{
     display: flex;
     cursor: pointer;
     padding: 1rem;
-    border-bottom: 0.1rem solid rgba(255,255,255,0.5);
+    border-bottom: 0.1rem solid rgba(255, 255, 255, 0.39);
 }
 
-.Contact:hover{
+.Watched:hover{
     background: linear-gradient(
         to right top ,
-        rgba(255,255,255,0.7),
+        rgba(255, 255, 255, 0.561),
         rgba(255,255,255,0.3));;
+}
+
+.Unwatched{
+    display: flex;
+    cursor: pointer;
+    padding: 1rem;
+    border-bottom: 0.1rem solid rgba(255, 255, 255, 0.335);
+    background: linear-gradient(to right top,#3feea5,#c7f1e2c4);
+}
+
+.Unwatched:hover{
+    background: linear-gradient(
+        to right top ,
+        #92f8d1,
+        #ffffff3d);;
 }
 
 .Conatct-info{
@@ -22,6 +37,7 @@
     padding-bottom: 0.3rem;
     font-weight: 500;
 }
+
 .Conatct-info p{
     font-size: 0.8rem;
     color: gray;

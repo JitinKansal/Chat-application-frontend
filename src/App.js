@@ -1,6 +1,6 @@
 import './App.css';
 import Landingpage from './components/Landingpage/Landingpage';
-import Interface from './components/Interface/Interface';
+// import Interface from './components/Interface/Interface';
 import Signin from './components/Signin/signin';
 import Signup from './components/Signup/signup';
 import {BrowserRouter, Switch,Route} from 'react-router-dom';
@@ -14,7 +14,6 @@ function App() {
       <div className="App">
       <Switch>
             <Route exact path="/" component={Landingpage}/>
-            <Route exact path="/login/user" component={Interface}/>
             <Route exact path="/signin" component={Signin}/>
             <Route exact path="/signup" component={Signup}/>
       </Switch>

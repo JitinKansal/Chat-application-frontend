@@ -1,42 +1,130 @@
-import {useContext, useState} from 'react';
+import {useContext, useState,useEffect,useRef} from 'react';
 import Avatar from '../Avatar/Avatar';
 import './Chat.css';
 import Messages from '../Messages/Messages.js'
 import {Context} from '../context';
 import axios from 'axios';
+import Picker,{SKIN_TONE_DARK} from 'emoji-picker-react';
 
 
-const Chat = () => {
+const Chat = ({socket}) => {
     const [globalState, setGlobalState] = useContext(Context);
-    const [MessageText,setMessageText] = useState("");
-
+    const [displaySendBtn,setDisplaySendBtn] = useState(false);
+    const [smileyClicked,setSmileyClicked] = useState(false);
+    const [messageText, setMessageText] = useState("");
     const [displayMessages,setDisplayMessages] = useState([]);
-    //     ()=>{
-    //     if(globalState.chatMessages.length > 0){
-    //     globalState.chatMessages.map((val)=>{
-    //         console.log(val);
-    //         return(<Messages data={val}/>);
-    //     })}}
-    // );
-    
-    // if(globalState.chatMessages.length > 0){
-    //     setDisplayMessages(globalState.chatMessages.map((val)=>{
-    //         // console.log(val);
-    //         return(<Messages data={val}/>);
-    //     }))
-    // }
+    const messagesEndRef = useRef(null);
+
+    useEffect(() => {
+        if(globalState.chatMessages !== undefined && globalState.chatMessages.length > 0){
+            setDisplayMessages(globalState.chatMessages.map((val,key)=>{
+                return(<Messages key={key} data={val}/>);
+            }));
+        }else{
+            setDisplayMessages([]);
+        }
+      }, [globalState]);
+
+    useEffect(() => {
+        if(globalState.chatId !== undefined){
+            socket.on("receiveMessage",async (data)=>{
+                const index = globalState.user.rooms.findIndex(element => element._id === data.roomId);
+                if(globalState.chatId === data.roomId && data.message.from !== globalState.user.name){
+                    let user = globalState.user;
+                    if(user.rooms[index].seen === false){
+                        const updateWatchedMessage = {
+                            userId : globalState.user.id,
+                            roomId : data.roomId,
+                        }
+                        socket.emit("seenAllMessages",updateWatchedMessage,(res)=>{
+                            console.log(res);
+                        }); 
+                    }
+                    user.rooms[index].seen = true;
+                    user.rooms[index].unseenMessages = 0;
+                    user.rooms[index].lastMessage = data.message;
+                    user.rooms.sort((a,b)=>{
+                        const timeOfa = new Date(a.lastMessage.time);
+                        const timeOfb = new Date(b.lastMessage.time);
+                        if(timeOfa > timeOfb){
+                            return -1;
+                        }else{
+                            return 1;
+                        }
+                    });
+                    setGlobalState({user:user,
+                        otherUsers:globalState.otherUsers,
+                        chatName:globalState.chatName,
+                        chatId:globalState.chatId,
+                        chatMessages:[...globalState.chatMessages,data.message],
+                    }); 
+                    
+                }else if(data.message.from !== globalState.user.name && index !== -1){
+                    // console.log(data.message.from);
+                    let user = globalState.user;
+                    user.rooms[index].seen = false;
+                    user.rooms[index].unseenMessages = 1;
+                    user.rooms[index].lastMessage = data.message;
+                    user.rooms.sort((a,b)=>{
+                        const timeOfa = new Date(a.lastMessage.time);
+                        const timeOfb = new Date(b.lastMessage.time);
+                        if(timeOfa > timeOfb){
+                            return -1;
+                        }else{
+                            return 1;
+                        }
+                    });
+                    setGlobalState({
+                        user:user,
+                        otherUsers:globalState.otherUsers,
+                        chatName:globalState.chatName,
+                        chatId:globalState.chatId,
+                        chatMessages:globalState.chatMessages,
+                        });
+                }
+            });
+        }
+      }, [globalState]);
+
+    const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    useEffect(() => {
+        scrollToBottom()
+    }, [displayMessages]);
+
+    const onChangeInput = (event) =>{
+        setMessageText(event.target.value);
+        if(event.target.value === "" || event.target.value === undefined)
+        {
+            setDisplaySendBtn(false);
+        }else{
+            setDisplaySendBtn(true);
+        }
+    };
+
+    const onSmileClick = (event) =>{
+        if(smileyClicked){
+            setSmileyClicked(false);
+        }else{
+            setSmileyClicked(true);
+        }
+    };
+
+    const onEmojiClick = (event, emojiObject) => {
+        setMessageText( messageText + emojiObject.emoji );
+        setDisplaySendBtn(true);
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // console.log(event.target.elements[0].value);
-        event.target.elements[0].value = ""
-        event.target.value="";
-        if(MessageText !== ""){
-            
+        if(messageText !== ""){
             var create_newRoom = true;
-            for(let i=0;i<globalState.user.rooms.length;i++)
+            let index;
+            for(index=0;index<globalState.user.rooms.length;index++)
             {
-                if(globalState.chatName === globalState.user.rooms[i].name)
+                if(globalState.chatName === globalState.user.rooms[index].name)
                 {
                     create_newRoom= false;
                     break;
@@ -44,78 +132,123 @@ const Chat = () => {
             }
             if(create_newRoom){
                 const room = {
+                    name: undefined,
                     members:[globalState.user.name,globalState.chatName],
-                    body:MessageText,
+                    body:messageText,
                     from:globalState.user.name,
                     time:Date(),
                 }
-                axios.post('create_room',room).then(
-                    (res) => {
-                        // console.log(res.data.room);
-                        console.log(res.data.message,res.data.status);
-                        setGlobalState({user:globalState.user,
-                            otherUsers:globalState.otherUsers,
-                            chatName:globalState.chatName,
-                            chatId:globalState.chatId,
-                            chatMessages:[...globalState.chatMessages,
-                                {body:room.body,from:room.from,time:room.time}],
-                        });
-                        }).catch(
-                            error => {
-                                console.log(error.message);
-                            });
+                socket.emit("create_room",room, async (res)=>{
+                    console.log(res);
+                });
+                
             }else{
                 const messageObj = {
-                    body:MessageText,
+                    body:messageText,
                     from:globalState.user.name,
                     time:Date(),
                 }
-                axios.post(`room/send_message/${globalState.chatId}`,messageObj).then(
-                    (res) => {
-                        console.log(res.data.message,res.data.status);
-                        // console.log(res.data.room);
-
-                        setGlobalState({user:globalState.user,
+                const data = {
+                    roomId:globalState.chatId,
+                    message:messageObj
+                }
+                socket.emit("sendMessage",data,async(res)=>{
+                    console.log(res);
+                    if(res !== undefined){
+                        let user = globalState.user;
+                        user.rooms[index].seen = true;
+                        user.rooms[index].unseenMessages = 0;
+                        user.rooms[index].lastMessage = data.message;
+                        user.rooms.sort((a,b)=>{
+                            const timeOfa = new Date(a.lastMessage.time);
+                            const timeOfb = new Date(b.lastMessage.time);
+                            if(timeOfa > timeOfb){
+                                return -1;
+                            }else{
+                                return 1;
+                            }
+                        });
+                        setGlobalState({user:user,
                             otherUsers:globalState.otherUsers,
                             chatName:globalState.chatName,
                             chatId:globalState.chatId,
                             chatMessages:[...globalState.chatMessages,messageObj],
-                        });
-                    }).catch(
-                            error => {
-                                console.log(error.message);
-                            });
+                        });  
+                    }
+                });
             }
         }
+        event.target.elements[0].value = "";
+        setMessageText("");
+    }
+
+    const handleChatSettings = ()=>{
+        // return(
+        //     <div className="chatSetting"></div>
+        // )
     }
 
     if(globalState.chatName!==" " ){
         return(
             <div className="chating-area">
+
                 <div className="connection-header">
                     <Avatar/>
                     <div className="connection-info">
                         <h3>{globalState.chatName}</h3>
-                        <p>Last Seen At...</p>
+                        {/* <p>Last Seen At...</p> */}
                     </div>
                     <div className="connection-right">
-                        <i class="fas fa-search"></i>
+                        {/* <i class="fas fa-search"></i> */}
                         <i class="fas fa-paperclip"></i>
-                        <i class="fas fa-ellipsis-v"></i>
+                        <i class="fas fa-ellipsis-v" onClick={handleChatSettings}></i>
                     </div>
+                    <div className="chatSetting"></div>
                 </div>
+
                 <div className="Message-body">
                     {displayMessages}
-                    {/* {globalState.chatMessages} */}
+                    <div ref={messagesEndRef}></div>
                 </div>
+
+                {smileyClicked?<Picker onEmojiClick={onEmojiClick}
+                skinTone={SKIN_TONE_DARK}
+                pickerStyle={{ 
+                    width: '100%',
+                    background:'none',
+                    height: '10rem',
+                    border: 'none',
+                    boxShadow: 'none',
+
+                }} 
+                disableSearchBar = {true}
+                disableAutoFocus = {true}
+                // groupVisibility={{
+                //     recently_used: false,
+                //   }}
+                groupNames={{
+                    smileys_people: '',
+                    animals_nature: '',
+                    food_drink: '',
+                    travel_places: '',
+                    activities: '',
+                    objects: '',
+                    symbols: '',
+                    flags: '',
+                    recently_used: '',
+                    }}
+                />:null}
+
                 <div className="chat-footer">
-                    <i className="far fa-smile"></i>
+                    <i className="far fa-smile" onClick={onSmileClick}></i>
                     <form onSubmit={handleSubmit}>
-                    <input type="text" name="SendMessageBar" placeholder="   Type a message" onChange={(e)=>setMessageText(e.target.value)}></input>
-                    <button>send message</button>
+                    <input type="text" name="SendMessageBar" placeholder="   Type a message" value={messageText} onChange={onChangeInput}></input>
+                    {displaySendBtn?<button className="display"><i className="fas fa-caret-right"></i></button>
+                    :<button className="hide"><i className="fas fa-caret-right"></i></button>}
                     </form>
-                    <i className="fas fa-microphone"></i>
+                    {/* <i className="fas fa-microphone"></i> */}
                 </div>
+
             </div>
         )
     }else{

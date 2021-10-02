@@ -3,7 +3,9 @@ import './signin.css';
 import Interface from '../Interface/Interface';
 import axios from 'axios';
 import {Context} from '../context';
+import io from "socket.io-client";
 
+let socket;
 
 const Signin = () => {
    
@@ -11,11 +13,12 @@ const Signin = () => {
     const [password,setPassword] = useState('');
     const [errormessage,setErrormessage] = useState('');
     const [isSignin,setIsSignin] = useState(false);
+    // eslint-disable-next-line
     const [globalState, setGlobalState] = useContext(Context);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(username,password);
+        // console.log(username,password);
         let err = "";
         if(!username){
                 err = <strong>Please provide the user name.</strong>;
@@ -30,19 +33,34 @@ const Signin = () => {
             };
             axios.post('user/login',user).then(
                 (res) => {
-                    console.log(res.data.message,res.data.status);
+                    // console.log(res.data.message,res.data.status);
                     setGlobalState({
                         user:res.data.user,
-                        otherUsers:res.data.otherUsers,
+                        otherUsers:res.data.otherUsers.filter(
+                            (val)=>{
+                                if(val.name !== res.data.user.name && res.data.user.rooms.filter((e)=>
+                                {if(e.name===val.name){
+                                    return e;
+                                }
+                                return false;
+                                }).length === 0)
+                                {
+                                    return val;
+                                }
+                                return false;
+                            }
+                        ),
                         chatName:" ",
                         chatId:" ",
-                        chatMessages:[{}],
+                        chatMessages:[],
                     });
+                    socket = io.connect("http://localhost:4000");
                     setIsSignin(true);
                     }).catch(
                         error => {
+                            err = <strong>{error.message}</strong>;
                             console.log(error.message);
-                            console.log("name/password is incorrect");
+                            // console.log("name/password is incorrect");
                         });
         }
         setErrormessage(err);
@@ -68,7 +86,7 @@ const Signin = () => {
         );
     }else{
         return(
-                <Interface/>
+                <Interface socket={socket}/>
         );
     }
 }

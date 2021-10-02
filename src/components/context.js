@@ -9,7 +9,7 @@ export const GlobalState = (props) =>{
         otherUsers:[],
         chatName:"",
         chatId:"",
-        chatMessages:[],
+        chatMessages:[{}],
     });
     return(
         <Context.Provider value={[globalState,setGlobalState]}>

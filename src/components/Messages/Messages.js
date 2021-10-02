@@ -1,40 +1,44 @@
 import './Messages.css';
-import {useContext,useState} from 'react';
+import {useContext,useState,useEffect} from 'react';
 import {Context} from '../context';
 
 
 function Messages(props){
-    const [mymessage,setMymessage] = useState(false);
+    // eslint-disable-next-line
     const [globalState, setGlobalState] = useContext(Context);
+    const [mymessage,setMymessage] = useState(props.data.from=== globalState.user.name?true:false);
+    // console.log(props);
 
-    if(props.data.from === globalState.user.name){
-        setMymessage(true);
-    }
+    useEffect(()=>{
+        if(props.data.from=== globalState.user.name){
+            setMymessage(true);
+        }else{
+            setMymessage(false);
+        }
+    });
     
-    console.log(mymessage);
-    console.log(props);
-
     if(mymessage === true){
         return(
-                <p className="Message Message-send">
-                    {/* <span className="Message-name">
-                    {props.sender}
-                    </span> */}
-                    {props.data.body}
+                <p className="Message Message-sended">
+                    <span className="Message-body">
+                        {props.data.body}
+                    </span>
                     <span className="Message-date">
-                    {props.data.time}
+                        {props.data.time.split(" ")[1]+" "+props.data.time.split(" ")[2]+" "+props.data.time.split(" ")[3]+" "+props.data.time.split(" ")[4]}
                     </span>
                 </p>
         )
     }else{
         return(
-        <p className="Message">
+        <p className="Message Message-received">
             <span className="Message-name">
-            {props.data.from}
+                {props.data.from}
             </span>
-            {props.data.body}
+            <span className="Message-body">
+                    {props.data.body}
+            </span>
             <span className="Message-date">
-            {props.data.time}
+                    {props.data.time.split(" ")[1]+" "+props.data.time.split(" ")[2]+" "+props.data.time.split(" ")[3]+" "+props.data.time.split(" ")[4]}
             </span>
         </p>
     )
