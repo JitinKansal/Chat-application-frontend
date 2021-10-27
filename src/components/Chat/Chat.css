@@ -72,10 +72,13 @@
 }
  
 .chat-footer{
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 2.7rem;
+    bottom: 0.3%;
+    right: 0.6%;
 }
 
 .chat-footer form{
@@ -91,7 +94,6 @@
     to right top,
     rgba(255,255,255,0.7),
     rgba(255,255,255,0.4));
-    /* background-color: brown; */
     border: none;
     outline: none;
 }
@@ -117,12 +119,42 @@
     display: none;
 }
 
-.chatSetting{
-    /* position: relative; */
-    /* transform: translateX(20rem,40rem); */
-    /* left: -20rem; */
-    /* right: 20%; */
-    height: 5rem;
-    width: 5rem;
-    background-color: brown;
+.fas{
+    position: relative;
 }
+
+.fas:hover, .chatDropDown{
+    cursor: pointer;
+}
+
+.chatDropDown{
+    position: absolute;
+    top: 8%;
+    left: 90%;
+    width: 15%;
+    transform: translateX(-45%);
+    background: linear-gradient(
+    to right bottom ,
+    rgb(255, 255, 255,0.7),
+    rgb(253, 253, 255,0.4));
+    border-radius: 0.6rem;
+    overflow: hidden;
+    transition: height var(--speed) ease;
+    font-weight: 500;
+    opacity: 0.6;
+    z-index: 2;
+    box-shadow: 0.1rem 0.1rem 0.5rem black;
+}
+
+.chatDropDown div{
+    padding: 1rem;
+    cursor: pointer;
+}
+
+.chatDropDown div:hover {
+background: linear-gradient(
+to right bottom ,
+rgb(255, 255, 255),
+rgb(253, 253, 255));
+}
+ 

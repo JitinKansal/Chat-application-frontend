@@ -4,9 +4,11 @@ import {useState,useContext,useEffect} from 'react';
 import {Context} from '../context';
 import axios from 'axios';
 
-function Contact({socket,contactInfo}) {
+function Contact({socket,contactInfo,InterfaceCallBack}) {
     const [globalState, setGlobalState] = useContext(Context);
     const [seenMessages,setSeenMessages] = useState(contactInfo.seen);
+
+    // console.log(globalState.user.rooms.seen);
 
     useEffect(()=>{
         if(globalState.chatId === contactInfo._id){
@@ -17,26 +19,26 @@ function Contact({socket,contactInfo}) {
     },[globalState]);
 
     const handleClick = async () => {
+        InterfaceCallBack(false,[]);
         let NewChat = true;
-        for(let i=0;i<globalState.user.rooms.length;i++)
+        var User = globalState.user
+        for(let i=0;i<User.rooms.length;i++)
         {
-            if(contactInfo.name === globalState.user.rooms[i].name)
+            if(contactInfo.name === User.rooms[i].name)
             {
                 NewChat= false;
+                User.rooms[i].seen = true;
                 break;
             }
-        }
-            
+        } 
         if(NewChat){
-            // console.log(NewChat);
-            setGlobalState({user:globalState.user,
+            setGlobalState({user:User,
                 otherUsers:globalState.otherUsers,
                 chatName:contactInfo.name,
                 chatId:contactInfo._id,
                 chatMessages:[],
             });
         }else{
-            // console.log(NewChat);
             const Messages = await axios.get(`room/${contactInfo._id}`).then(
                 async (res) => {
                     // console.log(res.data.room.messages);
@@ -56,7 +58,7 @@ function Contact({socket,contactInfo}) {
                             console.log(error.message);
                         });
             setGlobalState({
-                user:globalState.user,
+                user:User,
                 otherUsers:globalState.otherUsers,
                 chatName:contactInfo.name,
                 chatId:contactInfo._id,

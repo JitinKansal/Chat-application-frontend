@@ -29,19 +29,19 @@ class signup extends Component{
         event.preventDefault();
         let err = "";
         if(!this.state.username){
-                err = <strong>Please provide the user name.</strong>;
+                err = <strong>Username is required!</strong>;
         }   
         else if(!this.state.email){
-                err = <strong>Please provide the email.</strong>;
+                err = <strong>Email is required!</strong>;
         }
         else if(!this.state.password){
-                err = <strong>Please provide the password.</strong>;
+                err = <strong>Password is required!</strong>;
         }
         else if(!this.state.Repassword){
-            err = <strong>Please provide the Repassword.</strong>;
+            err = <strong>Please fill all the fields!</strong>;
         }
         else if(this.state.password !== this.state.Repassword){
-            err = <strong>Please enter the same password in Repassword.</strong>;
+            err = <strong>Password mismatch!!!</strong>;
         }
         else{
             const user = {
@@ -74,24 +74,16 @@ class signup extends Component{
             return(
                 <form className="signup" onSubmit={this.handleSubmit}>
 
-                <label>Name:
-                <input type="text" name="username" onChange={this.handleChange}/>
-                </label>
+                <input className="input" type="text" name="username" placeholder="User Name" onChange={this.handleChange}/>
 
-                <label>MailId:
-                <input type="email" name="email" onChange={this.handleChange}/>
-                </label>
+                <input className="input" type="email" name="email" placeholder="Email" onChange={this.handleChange}/>
 
-                <label>Generate Password:
-                <input type="password" name="password" onChange={this.handleChange}/>
-                </label>
+                <input className="input" type="password" name="password" placeholder="Generate Password" onChange={this.handleChange}/>
 
-                <label>ReEnter Password:
-                <input type="password" name="Repassword" onChange={this.handleChange}/>
-                </label>
+                <input className="input" type="password" name="Repassword" placeholder="Re-Enter Password" onChange={this.handleChange}/>
 
-                <input className="signupbutton" type="submit" value="SignUp" />
-                {this.state.errormessage}
+                <input className="button" type="submit" value="REGISTER" />
+                <span className="credentialsWarning">{this.state.errormessage}</span>
                 </form>
             );
         }else{
