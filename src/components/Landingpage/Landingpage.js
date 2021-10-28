@@ -34,6 +34,14 @@ const Landingpage = ()=>{
           <div className="para">
             <p>SNAKE BITE</p>
           </div>
+          <div className="CreatorInfo">
+            <p>
+              {"Contributors: "}
+              <a href="https://www.linkedin.com/in/jitin-kansal-08345b18b/" target="_blank"><i class="fab fa-linkedin"></i>JITIN KANSAL</a>
+              {" & "}
+              <a href="https://www.linkedin.com/in/harsh-vardhan-819314110/" target="_blank"><i class="fab fa-linkedin"></i>HARSH VARDHAN</a>
+            </p>
+          </div>
         </div>
         
         <div className="accessSnake">

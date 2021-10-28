@@ -168,3 +168,20 @@ animation-delay: 1.5s;
     width: 60%;
     margin-left: 15%;
 }
+
+.CreatorInfo{
+    position: absolute;
+    letter-spacing: 0.8mm;
+    font-weight: 400;
+    top: 95%;
+    left: 33%;
+}
+
+.CreatorInfo a{
+    font-weight: 500;
+    text-decoration: none;
+    color: black;
+}
+.fa-linkedin{
+    color: blue;
+}
