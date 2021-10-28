@@ -27,7 +27,7 @@ const Landingpage = ()=>{
               <span></span>
               <span></span>
               {/* <img src="./Snake-app-Icon.png" alt="Avatar"></img> */}
-              <img src="./SnakeLogo.gif" alt="gif"></img>
+              <img src="./GIF/SnakeLogo.gif" alt="gif"></img>
               <span></span>
               <span></span>
           </div>
