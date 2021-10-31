@@ -4,16 +4,12 @@ import Signin from '../Signin/signin';
 import Signup from '../Signup/signup';
 import Interface from '../Interface/Interface';
 
-
-
-
 const Landingpage = ()=>{
 
   const [isSignUpClicked,setSignUpClicked] = useState(false);
   const [isSignin,setIsSignin] = useState(false);
   const [socket,setSocket] = useState();
   const callbackFuction = (data)=>{
-    // console.log(data);
     setIsSignin(data.isSignin);
     setSocket(data.socket);
   }
@@ -24,12 +20,11 @@ const Landingpage = ()=>{
 
         <div className="logo">
           <div className="square">
-              <span></span>
-              <span></span>
-              {/* <img src="./Snake-app-Icon.png" alt="Avatar"></img> */}
-              <img src="./GIF/SnakeLogo.gif" alt="gif"></img>
-              <span></span>
-              <span></span>
+            <span></span>
+            <span></span>
+            <img src="./GIF/SnakeLogo.gif" alt="Logo/GIF"></img>
+            <span></span>
+            <span></span>
           </div>
           <div className="para">
             <p>SNAKE BITE</p>
@@ -37,9 +32,9 @@ const Landingpage = ()=>{
           <div className="CreatorInfo">
             <p>
               {"Contributors: "}
-              <a href="https://www.linkedin.com/in/jitin-kansal-08345b18b/" target="_blank"><i class="fab fa-linkedin"></i>JITIN KANSAL</a>
+              <a href="https://www.linkedin.com/in/jitin-kansal-08345b18b/" target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin"></i>JITIN KANSAL</a>
               {" & "}
-              <a href="https://www.linkedin.com/in/harsh-vardhan-819314110/" target="_blank"><i class="fab fa-linkedin"></i>HARSH VARDHAN</a>
+              <a href="https://www.linkedin.com/in/harsh-vardhan-819314110/" target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin"></i>HARSH VARDHAN</a>
             </p>
           </div>
         </div>
@@ -49,8 +44,8 @@ const Landingpage = ()=>{
           <div>
             <Signin parentCallback = {callbackFuction}/>
             <div className="Register">
-                <div className="line"></div>
-                <div className="button" onClick={()=>{setSignUpClicked(!isSignUpClicked)}}>SIGN UP</div>
+              <div className="line"></div>
+              <div className="button" onClick={()=>{setSignUpClicked(!isSignUpClicked)}}>SIGN UP</div>
             </div>
           </div>
           :<Signup/>
@@ -61,8 +56,8 @@ const Landingpage = ()=>{
   }
   else{
     return(
-          <Interface socket={socket} parentCallback = {callbackFuction}/>
-          );
+      <Interface socket={socket} parentCallback = {callbackFuction}/>
+    );
   }
 } 
 

@@ -1,10 +1,10 @@
-import {useContext, useState,useEffect,useRef} from 'react';
+import {useContext, useState} from 'react';
 import './CreateNewGroup.css';
 import {Context} from '../context';
 
 
 const CreateNewGroup = ({socket,ParticipantsList,InterfaceCallBack}) => {
-    const [globalState, setGlobalState] = useContext(Context);
+    const [globalState] = useContext(Context);
     const [GroupName, setGroupName] = useState("");
     const [SelectedParticipants,setSelectedParticipants] = useState([]);
 
@@ -13,8 +13,6 @@ const CreateNewGroup = ({socket,ParticipantsList,InterfaceCallBack}) => {
     };
 
     const handleClickSubmit = ()=>{
-        console.log(SelectedParticipants);
-        console.log(GroupName);
         const room = {
             name: GroupName,
             members:[...SelectedParticipants,globalState.user.name],
@@ -23,7 +21,9 @@ const CreateNewGroup = ({socket,ParticipantsList,InterfaceCallBack}) => {
             time:new Date(),
         }
         socket.emit("create_room",room, async (res)=>{
-            console.log(res);
+            if(res.error){
+                console.log(res);
+            }
         });
         InterfaceCallBack(false,[]);
     }
@@ -38,8 +38,8 @@ const CreateNewGroup = ({socket,ParticipantsList,InterfaceCallBack}) => {
                     return(<span key={key}>{val}<i className="fas fa-times" onClick={()=>{
                         SelectedParticipants.splice(key,1)
                         setSelectedParticipants([...SelectedParticipants]);
-                    }}></i></span>);})}
-                    
+                    }}></i></span>);
+                })}
             </div>
             <div className="Add-Participants">
                 <h4>Add Participants</h4>
@@ -57,10 +57,8 @@ const CreateNewGroup = ({socket,ParticipantsList,InterfaceCallBack}) => {
                 </div>
                 :null
             }
-            
         </div>
     )
-    
 }
 
 export default CreateNewGroup;

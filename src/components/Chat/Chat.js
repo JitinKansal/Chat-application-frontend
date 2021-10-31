@@ -37,7 +37,9 @@ const Chat = ({socket}) => {
                             roomId : data.roomId,
                         }
                         socket.emit("seenAllMessages",updateWatchedMessage,(res)=>{
-                            console.log(res);
+                            if(res.error){
+                                console.log(res);
+                            }
                         }); 
                     }
                     user.rooms[index].seen = true;
@@ -60,7 +62,6 @@ const Chat = ({socket}) => {
                     }); 
                     
                 }else if(data.message.from !== globalState.user.name && index !== -1){
-                    // console.log(data.message.from);
                     let user = globalState.user;
                     user.rooms[index].seen = false;
                     user.rooms[index].unseenMessages = 1;
@@ -84,10 +85,10 @@ const Chat = ({socket}) => {
                 }
             });
         }
-      }, [globalState]);
+      }, [globalState,socket,setGlobalState]);
 
     const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
 
     useEffect(() => {
@@ -139,7 +140,9 @@ const Chat = ({socket}) => {
                     time:Date(),
                 }
                 socket.emit("create_room",room, async (res)=>{
-                    console.log(res);
+                    if(res.error){
+                        console.log(res);
+                    }
                 });
                 
             }else{
@@ -153,7 +156,9 @@ const Chat = ({socket}) => {
                     message:messageObj
                 }
                 socket.emit("sendMessage",data,async(res)=>{
-                    console.log(res);
+                    if(res.error){
+                        console.log(res);
+                    }
                     if(res !== undefined){
                         let user = globalState.user;
                         user.rooms[index].seen = true;
@@ -187,8 +192,11 @@ const Chat = ({socket}) => {
             roomId:globalState.chatId,
             userId:globalState.user.id,
         };
+        setOpenChatSettings(!openChatSettings);
         socket.emit("clear_messages",data,async(res)=>{
-            console.log(res);
+            if(res.error){
+                console.log(res);
+            }
             if(res.message !== undefined){
                 const index = globalState.user.rooms.findIndex(element => element._id === data.roomId);
                 let user = globalState.user;
@@ -211,9 +219,11 @@ const Chat = ({socket}) => {
             chatName:globalState.chatName,
             userId:globalState.user.id,
         };
-
+        setOpenChatSettings(!openChatSettings);
         socket.emit("delete_room",data,async(res)=>{
-            console.log(res);
+            if(res.error){
+                console.log(res);
+            }
             if(res.message !== undefined){
                 let user = globalState.user;
                 for(let i=0;i<user.rooms.length;i++){
@@ -249,7 +259,7 @@ const Chat = ({socket}) => {
                     </div>
                     <div className="connection-right">
                         {/* <i class="fas fa-search"></i> */}
-                        <i class="fas fa-paperclip"></i>
+                        {/* <i class="fas fa-paperclip"></i> */}
                         <i class="fas fa-ellipsis-v" onClick={() => {setOpenChatSettings(!openChatSettings)}}></i>
                     </div>
                     {openChatSettings?
@@ -301,7 +311,6 @@ const Chat = ({socket}) => {
                     :<button className="hide"><i className="fas fa-caret-right"></i></button>}
                     </form>
                 </div>
-                
 
             </div>
         )
@@ -318,6 +327,5 @@ const Chat = ({socket}) => {
         )
     }
 }
-
 
 export default Chat;

@@ -8,15 +8,13 @@ function Contact({socket,contactInfo,InterfaceCallBack}) {
     const [globalState, setGlobalState] = useContext(Context);
     const [seenMessages,setSeenMessages] = useState(contactInfo.seen);
 
-    // console.log(globalState.user.rooms.seen);
-
     useEffect(()=>{
         if(globalState.chatId === contactInfo._id){
             setSeenMessages(true);
         }else{
             setSeenMessages(contactInfo.seen);
         }
-    },[globalState]);
+    },[globalState,contactInfo._id,contactInfo.seen]);
 
     const handleClick = async () => {
         InterfaceCallBack(false,[]);
@@ -41,14 +39,16 @@ function Contact({socket,contactInfo,InterfaceCallBack}) {
         }else{
             const Messages = await axios.get(`room/${contactInfo._id}`).then(
                 async (res) => {
-                    // console.log(res.data.room.messages);
                     if(seenMessages === false){
                         const updateWatchedMessage = {
                             userId : globalState.user.id,
                             roomId : contactInfo._id,
                         }
                         socket.emit("seenAllMessages",updateWatchedMessage,(res)=>{
-                            console.log(res);
+                            if(res.error)
+                            {
+                                console.log(res.error,res.status);
+                            }
                         });
                         setSeenMessages(true);
                     }
@@ -78,6 +78,5 @@ function Contact({socket,contactInfo,InterfaceCallBack}) {
         </div>
     )
 }
-
 
 export default Contact;

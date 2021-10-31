@@ -1,6 +1,5 @@
 import './App.css';
 import Landingpage from './components/Landingpage/Landingpage';
-// import Interface from './components/Interface/Interface';
 import Signin from './components/Signin/signin';
 import Signup from './components/Signup/signup';
 import Interface from './components/Interface/Interface';

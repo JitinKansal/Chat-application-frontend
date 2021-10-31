@@ -12,7 +12,8 @@ const Signin = ({parentCallback}) => {
     const [password,setPassword] = useState('');
     const [errormessage,setErrormessage] = useState('');
     const [isSignin,setIsSignin] = useState(false);
-    const [globalState, setGlobalState] = useContext(Context);
+    // eslint-disable-next-line
+    const [globalState,setGlobalState] = useContext(Context);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -30,35 +31,36 @@ const Signin = ({parentCallback}) => {
             };
             axios.post('user/login',user).then(
              (res) => {
-                    console.log(res.data.message,res.data.status);
-                    setGlobalState({
-                        user:res.data.user,
-                        otherUsers:res.data.otherUsers.filter(
-                            (val)=>{
-                                if(val.name !== res.data.user.name && res.data.user.rooms.filter((e)=>
-                                {if(e.name===val.name){
-                                    return e;
-                                }
-                                return false;
-                                }).length === 0)
-                                {
-                                    return val;
-                                }
-                                return false;
+                console.log(res.data.message,res.data.status);
+                setGlobalState({
+                    user:res.data.user,
+                    otherUsers:res.data.otherUsers.filter(
+                        (val)=>{
+                            if(val.name !== res.data.user.name && res.data.user.rooms.filter((e)=>
+                            {if(e.name===val.name){
+                                return e;
                             }
-                        ),
-                        chatName:" ",
-                        chatId:" ",
-                        chatMessages:[],
-                    });
-                    socket = io.connect("http://localhost:4000");
-                    setIsSignin(true);
-                    }).catch(
-                        error => {
-                            err = <span className="credentialsWarning">Username/Password is incorrect</span>;
-                            setErrormessage(err);
-                            console.log(error.message);
-                        });
+                            return false;
+                            }).length === 0)
+                            {
+                                return val;
+                            }
+                            return false;
+                        }
+                    ),
+                    chatName:" ",
+                    chatId:" ",
+                    chatMessages:[],
+                });
+            socket = io.connect(process.env.REACT_APP_BACKEND_LINK);
+            setIsSignin(true);
+            }).catch(
+                error => {
+                    err = <span className="credentialsWarning">Username/Password is incorrect</span>;
+                    setErrormessage(err);
+                    console.log(error.message);
+                }
+            );
         }
         setErrormessage(err);
     }
@@ -79,6 +81,5 @@ const Signin = ({parentCallback}) => {
         </form>
     );
 }
-
 
 export default Signin;
