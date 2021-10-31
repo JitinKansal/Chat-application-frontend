@@ -2,7 +2,7 @@
 ## Snake Bite helps you connect with people in your life. Web site created using react.js.
 
 ## Link to acess all the API's is:
-https://snakebite.herokuapp.com/
+https://app-snakebite.herokuapp.com/
 
 ## Tech stack:
 1. Mongo DB  (BackEnd)

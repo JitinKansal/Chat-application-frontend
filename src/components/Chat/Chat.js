@@ -306,7 +306,7 @@ const Chat = ({socket}) => {
                 <div className="chat-footer">
                     <i className="far fa-smile" onClick={onSmileClick}></i>
                     <form onSubmit={handleSubmit}>
-                    <input type="text" name="SendMessageBar" placeholder="   Type a message" value={messageText} onChange={onChangeInput}></input>
+                    <input type="text" name="SendMessageBar" placeholder="Type a message" value={messageText} onChange={onChangeInput}></input>
                     {displaySendBtn?<button className="display"><i className="fas fa-caret-right"></i></button>
                     :<button className="hide"><i className="fas fa-caret-right"></i></button>}
                     </form>

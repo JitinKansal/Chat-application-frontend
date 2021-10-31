@@ -17,75 +17,78 @@ const Dashboard = ({socket,parentCallback,InterfaceCallBack}) =>{
         setSavedContacts(globalState.user.rooms.map((val,key)=>{
             return(<Contacts key={key} socket={socket} contactInfo={val} InterfaceCallBack={InterfaceCallBack} />);
         }));
-    }, [globalState,InterfaceCallBack,socket])
+    }, [globalState,InterfaceCallBack,socket]);
 
-    socket.on("receive_room",async (data)=>{
-        for(let i=0;i<data.members.length;i++)
-        {
-            if(globalState.user.name === data.members[i]){
-                let user = globalState.user;
-                let roomName;
-                if(data.name === undefined){
-                    if(i===0){
-                        roomName = data.members[1];
+    useEffect(() => {
+        socket.on("receive_room",async (data)=>{
+            for(let i=0;i<data.members.length;i++)
+            {
+                if(globalState.user.name === data.members[i]){
+                    let user = globalState.user;
+                    let roomName;
+                    if(data.name === undefined){
+                        if(i===0){
+                            roomName = data.members[1];
+                        }else{
+                            roomName = data.members[0];
+                        }
                     }else{
-                        roomName = data.members[0];
+                        roomName = data.name;
                     }
-                }else{
-                    roomName = data.name;
-                }
-                if(data.messages[0].from === globalState.user.name)
-                {
-                    user.rooms = [...user.rooms,{
-                        name:roomName,
-                        _id:data._id,
-                        seen:true,
-                        unseenMessages:0,
-                        lastMessage:data.messages[0],
-                    }]
-                    const updateWatchedMessage = {
-                        userId : globalState.user.id,
-                        roomId : data._id,
+                    if(data.messages[0].from === globalState.user.name)
+                    {
+                        user.rooms = [...user.rooms,{
+                            name:roomName,
+                            _id:data._id,
+                            seen:true,
+                            unseenMessages:0,
+                            lastMessage:data.messages[0],
+                        }]
+                        const updateWatchedMessage = {
+                            userId : globalState.user.id,
+                            roomId : data._id,
+                        }
+                        await socket.emit("seenAllMessages",updateWatchedMessage,(res)=>{
+                            if(res.error){
+                                console.log(res);
+                            }
+                        });
+                    }else{
+                        user.rooms = [...user.rooms,{
+                            name:roomName,
+                            _id:data._id,
+                            seen:false,
+                            unseenMessages:1,
+                            lastMessage:data.messages[0],
+                        }]
                     }
-                    await socket.emit("seenAllMessages",updateWatchedMessage,(res)=>{
-                        if(res.error){
-                            console.log(res);
+                    user.rooms.sort((a,b)=>{
+                        const timeOfa = new Date(a.lastMessage.time);
+                        const timeOfb = new Date(b.lastMessage.time);
+                        if(timeOfa > timeOfb){
+                            return -1;
+                        }else{
+                            return 1;
                         }
                     });
-                }else{
-                    user.rooms = [...user.rooms,{
-                        name:roomName,
-                        _id:data._id,
-                        seen:false,
-                        unseenMessages:1,
-                        lastMessage:data.messages[0],
-                    }]
+                    await setGlobalState({user:user,
+                        otherUsers:globalState.otherUsers.filter((val)=>{
+                            if(val.name !== roomName )
+                            {
+                                return val;
+                            }
+                            return false;
+                        }),
+                        chatName:globalState.chatName,
+                        chatId:globalState._id,
+                        chatMessages:globalState.chatMessages,
+                    });
+                    break;
                 }
-                user.rooms.sort((a,b)=>{
-                    const timeOfa = new Date(a.lastMessage.time);
-                    const timeOfb = new Date(b.lastMessage.time);
-                    if(timeOfa > timeOfb){
-                        return -1;
-                    }else{
-                        return 1;
-                    }
-                });
-                await setGlobalState({user:user,
-                    otherUsers:globalState.otherUsers.filter((val)=>{
-                        if(val.name !== roomName )
-                        {
-                            return val;
-                        }
-                        return false;
-                    }),
-                    chatName:globalState.chatName,
-                    chatId:globalState._id,
-                    chatMessages:globalState.chatMessages,
-                });
-                break;
             }
-        }
-    });
+        });
+        // eslint-disable-next-line 
+    },[socket]);
     
     const handleChange = async (event) =>{
         if(event.target.value === "" || event.target.value === undefined ){
